@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>softnote – 모바일 청첩장 템플릿</title>
+  <style>
+    :root{
+      --bg:#ffffff; --ink:#2b2b2b; --muted:#7b7b7b; --line:#ececec; --key:#789d84; --key-weak:#a6bda7; --accent:#e7efe9;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Pretendard,Apple SD Gothic Neo,Noto Sans KR,sans-serif;color:var(--ink);background:var(--bg);}
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+    .wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+
+    /* Header */
+    header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.8);backdrop-filter:saturate(180%) blur(10px);border-bottom:1px solid var(--line)}
+    .nav{display:flex;gap:18px;align-items:center;justify-content:center;height:56px;font-size:12px;letter-spacing:.18em;text-transform:uppercase}
+    .nav a{opacity:.75}
+    .nav a:hover{opacity:1}
+
+    /* Hero */
+    .hero{padding:48px 0 24px;text-align:center}
+    .hero h1{font-size:28px;letter-spacing:.06em;margin:12px 0 8px;text-transform:lowercase}
+    .hero p{color:var(--muted);font-size:13px;margin:0}
+
+    /* Trio section (date / oval photo / invite) */
+    .trio{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:48px;align-items:start;padding:32px 0 40px}
+    .card{background:#f7f7f7;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+    .card.soft{background:#fafafa}
+    .card .body{padding:18px}
+
+    .dateCard{position:relative;aspect-ratio:3/4;border-radius:16px;overflow:hidden}
+    .dateCard .dim{position:absolute;inset:0;background:rgba(0,0,0,.25)}
+    .dateCard .stamp{position:absolute;left:22px;bottom:22px;color:#fff;font-weight:500;font-size:24px;letter-spacing:.06em}
+    .dateCard .week{position:absolute;left:22px;bottom:12px;color:#fff;opacity:.85;font-size:12px}
+
+    .oval{position:relative;margin:auto;max-width:520px;background:#ddd;border-radius:38%/30%;overflow:hidden;border:1px solid var(--line);box-shadow:0 6px 18px rgba(0,0,0,.05)}
+    .oval img{width:100%;height:auto}
+    .names{text-align:center;margin-top:18px;color:var(--muted);font-size:14px}
+    .cta-center{display:flex;justify-content:center;margin-top:12px}
+    .btn{appearance:none;border:1px solid var(--line);background:#fff;padding:10px 16px;border-radius:999px;font-size:14px;cursor:pointer}
+    .btn:hover{border-color:#d9d9d9}
+
+    .invite.card{padding:0}
+    .invite h3{font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-size:14px;text-align:center;margin:24px 0 0}
+    .invite .body{padding:26px;text-align:center;line-height:1.9;background:#f7f7f7}
+
+    /* Gallery / Location / Message */
+    .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:36px;margin:56px 0}
+    .gallery{background:#fff}
+    .thumbs{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+    .thumbs div{aspect-ratio:1/1;background:#eaeaea;border-radius:6px}
+
+    .sectionTitle{font-weight:700;letter-spacing:.22em;text-align:center;color:var(--muted);font-size:14px;margin:0 0 16px;text-transform:uppercase}
+    .mapBox{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+    .map{background:#f2f2f2;aspect-ratio:4/3;display:grid;place-items:center;color:#888}
+    .mapActions{display:flex;gap:12px;justify-content:center;padding:10px}
+    .chip{border:1px solid var(--line);padding:7px 12px;border-radius:999px;background:#fff;font-size:12px}
+
+    .message{position:relative;border-radius:16px;overflow:hidden}
+    .message .overlay{position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.35));color:#fff;text-align:center;padding:16px;line-height:1.7}
+
+    /* Scene (video) */
+    .scene{margin:22px 0 56px}
+    .scene .player{border:1px solid var(--line);border-radius:12px;padding:12px}
+    .scene video{width:100%;border-radius:8px}
+
+    /* Share */
+    .share{display:flex;gap:18px;justify-content:flex-end;align-items:center;margin-top:12px}
+    .share .link{display:flex;gap:8px;align-items:center;font-size:14px;color:#6f6f6f}
+
+    /* Pricing */
+    .pricing{margin:72px 0;background:var(--accent);border:1px solid var(--line);border-radius:16px;padding:24px}
+    .pricing .cols{display:grid;grid-template-columns:1.6fr .7fr;gap:24px}
+    .pricing ul{margin:0;padding-left:18px;line-height:1.9}
+    .priceBox{display:grid;gap:10px;align-content:center;justify-items:center;background:#fff;border:1px dashed var(--key-weak);border-radius:12px;padding:18px}
+
+    /* Process timeline */
+    .timeline{margin:40px 0 64px;padding-left:6px;border-left:2px solid var(--line)}
+    .tItem{position:relative;margin-left:18px;padding:10px 0 24px}
+    .tItem::before{content:"";position:absolute;left:-28px;top:12px;width:14px;height:14px;border-radius:50%;background:#fff;border:2px solid var(--key)}
+    .tItem h4{margin:0 0 6px;font-size:16px}
+    .tItem p{margin:0;color:var(--muted)}
+
+    /* Forms */
+    .formSection{margin:56px 0;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+    .formHead{background:#fafafa;padding:12px 16px;border-bottom:1px solid var(--line);font-weight:600;letter-spacing:.14em;text-align:center}
+    .formBody{padding:20px;display:grid;gap:16px;background:#fcfcfc}
+    .field{display:grid;gap:8px}
+    label{font-size:14px;color:#6a6a6a}
+    input,select,textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px 12px;font-size:14px;background:#fff}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .check{display:flex;align-items:center;gap:8px}
+
+    /* Footer */
+    footer{margin:48px 0 80px;text-align:center;color:var(--muted);font-size:13px}
+
+    /* Utilities */
+    .center{text-align:center}
+    .mt8{margin-top:8px}
+    .mt16{margin-top:16px}
+    .mt24{margin-top:24px}
+
+    /* Responsive */
+    @media (max-width: 1024px){
+      .trio{grid-template-columns:1fr;gap:28px}
+      .grid3{grid-template-columns:1fr;gap:24px}
+      .pricing .cols{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="nav wrap">
+      <a href="#top">JEJU</a>
+      <a href="#top">SEOUL</a>
+      <a href="#top">PAW AND TOE</a>
+    </nav>
+  </header>
+
+  <main id="top" class="wrap">
+    <!-- HERO -->
+    <section class="hero">
+      <h1>april10.</h1>
+      <p>모바일 청첩장 템플릿 · softnote</p>
+    </section>
+
+    <!-- DATE · OVAL PHOTO · INVITE -->
+    <section class="trio">
+      <!-- Left: date video thumb style card -->
+      <div class="dateCard card">
+        <img src="https://images.unsplash.com/photo-1517821099601-2d8c8d4f7f04?q=80&w=1200&auto=format&fit=crop" alt="running in grass"/>
+        <div class="dim"></div>
+        <div class="stamp">23 | 04 | 10</div>
+        <div class="week">Saturday</div>
+      </div>
+
+      <!-- Center: Oval portrait -->
+      <div>
+        <div class="oval">
+          <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1340&auto=format&fit=crop" alt="couple at the beach"/>
+        </div>
+        <p class="names">이성범 권영희 의 장남 정국 · 김지철 정경선 의 장녀 민지</p>
+        <div class="cta-center">
+          <button class="btn" onclick="alert('연락하기 예시 액션입니다')">☎ 연락하기</button>
+        </div>
+      </div>
+
+      <!-- Right: invite text -->
+      <article class="invite card soft">
+        <h3>모시는 글</h3>
+        <div class="body">
+          여섯 번의 사계절을 지나<br/>
+          서로가 같이 한 발을 내딛기 좋은 날,<br/>
+          귀한 분들을 모신 자리에서<br/>
+          마침내 인생의 새로운 여정을 함께 시작합니다.<br/><br/>
+          저희의 다짐 나눔이 아름답고 행복한 순간,<br/>
+          기쁨을 함께해 주셨으면 합니다.
+        </div>
+      </article>
+    </section>
+
+    <!-- GALLERY · LOCATION · MESSAGE -->
+    <section class="grid3">
+      <!-- Gallery -->
+      <div>
+        <p class="sectionTitle">GALLERY</p>
+        <div class="card body thumbs">
+          <!-- 25 thumbs -->
+          <div></div><div></div><div></div><div></div><div></div>
+          <div></div><div></div><div></div><div></div><div></div>
+          <div></div><div></div><div></div><div></div><div></div>
+          <div></div><div></div><div></div><div></div><div></div>
+          <div></div><div></div><div></div><div></div><div></div>
+        </div>
+      </div>
+
+      <!-- Location -->
+      <div>
+        <p class="sectionTitle">LOCATION</p>
+        <div class="mapBox">
+          <div class="map">여기에 지도를 임베드하세요</div>
+          <div class="mapActions">
+            <a class="chip" href="#">티맵</a>
+            <a class="chip" href="#">카카오 내비</a>
+          </div>
+        </div>
+        <p class="center mt16">서울 강남구 논현로 549<br/>더채플앳논현</p>
+      </div>
+
+      <!-- Message image -->
+      <div>
+        <div class="message">
+          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1340&auto=format&fit=crop" alt="closeup"/>
+          <div class="overlay">축하해주신 고운 분들께 감사드리며<br/>행복하게 잘 살겠습니다.</div>
+        </div>
+        <div class="share">
+          <a class="link" href="#" onclick="shareKakao(event)">💬 카카오톡 공유하기</a>
+          <a class="link" href="#" onclick="copyLink(event)">🔗 링크주소 복사하기</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Scene / Video -->
+    <section class="scene">
+      <p class="sectionTitle">SCENE</p>
+      <div class="player">
+        <video controls poster="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1340&auto=format&fit=crop">
+          <source src="" type="video/mp4" />
+        </video>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="pricing">
+      <h3 class="center">모바일청첩장 상품</h3>
+      <div class="cols mt16">
+        <div>
+          <ul>
+            <li>사진청첩장과 영상청첩장 두 가지로 진행됩니다.</li>
+            <li>두 상품의 차이는 <b>타이틀영상 유/무</b>이며, 그외 모든 내용은 같습니다.</li>
+            <li>타이틀영상은 보내주신 영상파일을 <b>약 20초 길이</b>로 편집하여 진행합니다.</li>
+            <li>타이틀영상을 진행하지 않으시면 해당 위치는 사진 1장으로 대체됩니다.</li>
+            <li>사진은 <b>갯수 제한없이</b> 원하는 만큼 게시 가능하며, 영상파일은 <b>1개</b>만 가능합니다.</li>
+          </ul>
+        </div>
+        <div class="priceBox">
+          <div>사진 <b>₩ 20,000</b></div>
+          <div>영상 <b>₩ 50,000</b></div>
+          <button class="btn" onclick="scrollToForm()">샘플 보기 / 제작 문의</button>
+        </div>
+      </div>
+      <p class="mt16" style="color:#8a8a8a;font-size:12px">* 타이틀영상: 모바일청첩장 제일 처음 보여지는 영상으로, 소리 없이 자동 재생됩니다.</p>
+    </section>
+
+    <!-- Process -->
+    <section>
+      <h3 class="center">제작 과정</h3>
+      <div class="timeline">
+        <div class="tItem">
+          <h4>사진&영상 전달 <small style="color:var(--muted)">(+1 days)</small></h4>
+          <p>입금이 확인되면 제작에 필요한 사진과 영상파일을 요청드리고, 이메일로 보내주시면 됩니다.</p>
+        </div>
+        <div class="tItem">
+          <h4>모바일 청첩장 시안 <small style="color:var(--muted)">(+2 days)</small></h4>
+          <p>메일 수령 후 2일 안에 1차 시안 발송합니다. 오타 정정 및 영상 수정 요청을 할 수 있습니다.</p>
+        </div>
+        <div class="tItem">
+          <h4>최종 확정 <small style="color:var(--muted)">(+2 days)</small></h4>
+          <p>수정사항 요청 후 2일 안에 최종 시안 발송드리고, 완료됩니다. <b>완료(총 약 1주일)</b></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact / CTA -->
+    <section class="center">
+      <button class="btn" onclick="alert('카카오톡 문의하기 예시입니다')">카카오톡 문의하기</button>
+      <div class="mt16"></div>
+      <h3>모바일청첩장 제작하기</h3>
+    </section>
+
+    <!-- Forms -->
+    <section id="forms">
+      <!-- 예약자 정보 -->
+      <div class="formSection" id="order">
+        <div class="formHead">예약자 정보</div>
+        <div class="formBody">
+          <div class="field"><label>성함</label><input placeholder="예약하시는 분 성함"/></div>
+          <div class="field"><label>연락처</label><input placeholder="01012345678"/></div>
+          <div class="field"><label>e-mail</label><input placeholder="your@email.com"/></div>
+          <div class="field"><label>청첩장</label>
+            <div class="row">
+              <label class="check"><input type="radio" name="kind" checked/> 영상</label>
+              <label class="check"><input type="radio" name="kind"/> 사진</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 신랑측 정보 -->
+      <div class="formSection">
+        <div class="formHead">신랑측 정보</div>
+        <div class="formBody">
+          <div class="row">
+            <div class="field">
+              <label>신랑아버님 성함</label>
+              <div class="row">
+                <input placeholder="성함"/>
+                <label class="check"><input type="checkbox"/> 故</label>
+              </div>
+            </div>
+            <div class="field"><label>신랑아버님 연락처</label><input placeholder="01012345678"/></div>
+          </div>
+          <div class="row">
+            <div class="field"><label>신랑아버님 계좌번호</label><input placeholder="국민 123456789"/></div>
+            <div class="field"></div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label>신랑어머님 성함</label>
+              <div class="row">
+                <input placeholder="성함"/>
+                <label class="check"><input type="checkbox"/> 故</label>
+              </div>
+            </div>
+            <div class="field"><label>신랑어머님 연락처</label><input placeholder="01012345678"/></div>
+          </div>
+          <div class="row">
+            <div class="field"><label>신랑어머님 계좌번호</label><input placeholder="국민 123456789"/></div>
+            <div class="field"></div>
+          </div>
+
+          <div class="row">
+            <div class="field"><label>신랑님 성함</label><input/></div>
+            <div class="field"><label>신랑님 연락처</label><input/></div>
+          </div>
+          <div class="row">
+            <div class="field"><label>신랑님 계좌번호</label><input/></div>
+            <div class="field"><label>관계</label>
+              <select>
+                <option>아들</option>
+                <option>장남</option>
+                <option>차남</option>
+                <option>삼남</option>
+                <option>사남</option>
+                <option>오남</option>
+                <option>육남</option>
+                <option>칠남</option>
+                <option>막내</option>
+                <option>조카</option>
+                <option>손녀</option>
+                <option>동생</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 신부측 정보 -->
+      <div class="formSection">
+        <div class="formHead">신부측 정보</div>
+        <div class="formBody">
+          <div class="row">
+            <div class="field">
+              <label>신부아버님 성함</label>
+              <div class="row">
+                <input placeholder="성함"/>
+                <label class="check"><input type="checkbox"/> 故</label>
+              </div>
+            </div>
+            <div class="field"><label>신부아버님 연락처</label><input placeholder="01012345678"/></div>
+          </div>
+          <div class="row">
+            <div class="field"><label>신부아버님 계좌번호</label><input placeholder="국민 123456789"/></div>
+            <div class="field"></div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label>신부어머님 성함</label>
+              <div class="row">
+                <input placeholder="성함"/>
+                <label class="check"><input type="checkbox"/> 故</label>
+              </div>
+            </div>
+            <div class="field"><label>신부어머님 연락처</label><input placeholder="01012345678"/></div>
+          </div>
+          <div class="row">
+            <div class="field"><label>신부어머님 계좌번호</label><input placeholder="국민 123456789"/></div>
+            <div class="field"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+    <!-- 신부 정보 -->
+    <div class="formSection">
+      <div class="formHead editable" data-key="head.bride">신부 정보</div>
+      <div class="formBody">
+        <div class="row">
+          <div class="field"><label class="editable" data-key="label.bride.name">신부님 성함</label><input type="text" placeholder="신부님 성함" /></div>
+          <div class="field"><label class="editable" data-key="label.bride.phone">신부님 연락처</label><input type="text" placeholder="01012345678" /></div>
+        </div>
+        <div class="field"><label class="editable" data-key="label.bride.bank">신부님 계좌번호</label><input type="text" placeholder="국민 123456789" /></div>
+        <div class="field"><label class="editable" data-key="label.bride.relation">관계</label>
+          <select>
+            <option>딸</option>
+            <option>장녀</option>
+            <option>차녀</option>
+            <option>삼녀</option>
+            <option>사녀</option>
+            <option>오녀</option>
+            <option>육녀</option>
+            <option>칠녀</option>
+            <option>막내</option>
+            <option>조카</option>
+            <option>손녀</option>
+            <option>동생</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- 모시는 글 -->
+    <div class="formSection">
+      <div class="formHead editable" data-key="head.invite">모시는 글</div>
+      <div class="formBody">
+        <div class="field"><label class="editable" data-key="label.invite.title">제목</label><input type="text" placeholder="ex. 모시는 글" /></div>
+        <div class="field"><label class="editable" data-key="label.invite.body">글 내용</label><textarea rows="6" placeholder="모시는 글 내용을 입력하세요"></textarea></div>
+      </div>
+    </div>
+
+    <!-- 예식 정보 -->
+    <div class="formSection">
+      <div class="formHead editable" data-key="head.ceremony">예식 정보</div>
+      <div class="formBody">
+        <div class="field"><label class="editable" data-key="label.ceremony.date">예식일</label><input type="text" placeholder="24년 4월 10일 (토)" /></div>
+        <div class="field"><label class="editable" data-key="label.ceremony.time">예식시간</label><input type="text" placeholder="오후 1시 30분" /></div>
+        <div class="field"><label class="editable" data-key="label.ceremony.venue">예식장</label><input type="text" placeholder="더채플앳논현" /></div>
+        <div class="field"><label class="editable" data-key="label.ceremony.hall">층 및 홀</label><input type="text" placeholder="5층 라메르홀" /></div>
+        <div class="field"><label class="editable" data-key="label.ceremony.addr">예식장 주소</label><input type="text" placeholder="서울 강남구 논현로 549" /></div>
+      </div>
+    </div>
+
+    <!-- 확인 사항 -->
+    <div class="formSection">
+      <div class="formHead editable" data-key="head.policy">확인 사항</div>
+      <div class="formBody">
+        <ol style="line-height:1.8;font-size:14px;color:#444">
+          <li class="editable" data-key="policy.1"><b>결제 및 환불</b><br>양식 작성 후 입금을 원칙으로 하며, 예약자와 입금자 성함이 다를 경우 반드시 알려주셔야 합니다. 환불은 결제 후 24시간 이내에만 가능하며 이후에는 제작이 진행되어 환불이 불가합니다.</li>
+          <li class="editable" data-key="policy.2"><b>작업 및 상품 배송</b><br>타이틀 영상은 약 20초 길이로 편집되며, 수정은 1회만 가능합니다. 사진은 갯수 제한 없이 게시할 수 있으나 해상도 및 용량이 줄어듭니다.</li>
+          <li class="editable" data-key="policy.3"><b>모바일청첩장 유지기간</b><br>예식 후 1개월간 유지된 뒤 삭제됩니다.</li>
+          <li class="editable" data-key="policy.4"><b>기타사항</b><br>모바일청첩장은 SNS를 통해 공개될 수 있습니다. 비공개를 원하시면 중지요청이 가능합니다.</li>
+        </ol>
+        <div class="check"><input type="checkbox"/> <span class="editable" data-key="policy.check1">위 사항을 확인하였습니다. (필수)</span></div>
+        <div class="check"><input type="checkbox"/> <span class="editable" data-key="policy.check2">개인정보 수집·이용에 동의합니다. (필수)</span></div>
+        <p class="editable" data-key="policy.link" style="font-size:12px;color:#999;margin:0">| Softnote 개인정보취급방침 보기</p>
+      </div>
+    </div>
+
+    <!-- 기타 문의 -->
+    <div class="formSection">
+      <div class="formHead editable" data-key="head.etc">기타 문의</div>
+      <div class="formBody">
+        <div class="field"><label class="editable" data-key="label.etc.q">문의 내용</label><textarea rows="5" placeholder="기타 문의 사항을 입력해주세요"></textarea></div>
+        <p class="editable" data-key="bank.notice" style="background:#f7f7f7;padding:14px;border-radius:10px;font-size:14px;color:#444">제작비용은 양식 작성 완료 후 아래 계좌로 입금하시면 됩니다.<br><b>카카오뱅크 3333-08-3172021 김채이</b></p>
+        <div class="center"><button class="btn">제작의뢰하기</button></div>
+        <p class="editable" data-key="bank.warn" style="color:#c00;font-size:12px;text-align:center;margin-top:8px">* 입금확인이 되지 않으면, 연락 및 제작이 진행되지 않습니다.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Floating editor toggle -->
+  <div class="editBar"><button id="editToggle">✏️ 편집</button></div>
+
+  <script>
+    // Simple content store using localStorage
+    const KEY = 'softnote_inline_edits_v1';
+    const store = JSON.parse(localStorage.getItem(KEY) || '{}');
+    const $ = (sel,root=document)=>root.querySelector(sel);
+    const $$ = (sel,root=document)=>Array.from(root.querySelectorAll(sel));
+
+    // Restore saved edits
+    $$('.editable').forEach(el=>{ const k = el.dataset.key; if(store[k]) el.innerHTML = store[k]; });
+
+    // Toggle edit mode
+    const body = document.body; const btn = $('#editToggle');
+    let editing = false;
+    btn.addEventListener('click',()=>{
+      editing = !editing; body.classList.toggle('editing', editing);
+      btn.textContent = editing ? '✅ 저장 종료' : '✏️ 편집';
+      $$('.editable').forEach(el=> el.setAttribute('contenteditable', editing));
+      if(!editing){ localStorage.setItem(KEY, JSON.stringify(store)); alert('저장되었습니다'); }
+    });
+
+
+
+    // Save on blur/input
+    document.addEventListener('input',e=>{
+      if(!editing) return; const el = e.target.closest('.editable'); if(!el) return; store[el.dataset.key] = el.innerHTML;
+    });
+  </script>
+</body>
+</html>
+
+
